@@ -58,4 +58,9 @@ public class TodoController {
     toDoList.remove(id);
   }
 
+
+  @GetMapping
+  public HashMap<Long, Todo> getAll(){
+    return toDoList;
+  }
 }
