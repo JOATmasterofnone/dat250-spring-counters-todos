@@ -7,9 +7,8 @@ import java.util.NoSuchElementException;
 import java.util.HashMap;
 
 
-/**
- * Rest-Endpoint for todos.
- */
+@RestController
+@RequestMapping
 public class TodoController {
 
   public static final String TODO_WITH_THE_ID_X_NOT_FOUND = "Todo with the id %s not found!";
@@ -23,7 +22,6 @@ public class TodoController {
     toDoList.put(counter, properTodo);
     return properTodo;
   }
-
 
   @GetMapping("/todos/{id}")
   public Todo readTodo(@PathVariable Long id) {
