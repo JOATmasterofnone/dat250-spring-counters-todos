@@ -10,3 +10,4 @@ I started working on the assignment.
 
 Issues I haven't resolved include:
 - Only a couple of the test pass but I 100% believe it has to do with my java skill and not the concept of the assignment.
+- AFTER DEADLINE NOTE:  I actually figured out the java issues and now all the test pass :)

@@ -2,9 +2,8 @@ package no.hvl.dat250.rest.todos;
 
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.NoSuchElementException;
-
-import java.util.HashMap;
 
 
 @RestController
@@ -13,54 +12,56 @@ public class TodoController {
 
   public static final String TODO_WITH_THE_ID_X_NOT_FOUND = "Todo with the id %s not found!";
   private static long counter;
-  private static HashMap<Long, Todo> toDoList = new HashMap<>();
+  private static final ArrayList<Todo> toDoList = new ArrayList<>();
 
 
   @PostMapping("/todos")
   public Todo createTodo(@RequestBody Todo requestedTodo) {
     Todo properTodo = new Todo(counter++, requestedTodo.getSummary(), requestedTodo.getDescription());
-    toDoList.put(counter, properTodo);
+    toDoList.add(properTodo);
     return properTodo;
   }
 
   @GetMapping("/todos/{id}")
   public Todo readTodo(@PathVariable Long id) {
-    //Todo retrievedTodo;
-    Todo retrievedTodo = toDoList.get(id);
-    if (retrievedTodo == null) {
-      throw new NoSuchElementException(String.format(TODO_WITH_THE_ID_X_NOT_FOUND, id));
+    for (Todo existingTodo : toDoList) {
+      if (existingTodo.getId().equals(id)) {
+        return existingTodo;
+      }
     }
-    return retrievedTodo;
+
+    throw new NoSuchElementException(String.format(TODO_WITH_THE_ID_X_NOT_FOUND, id));
   }
 
 
   @PutMapping("/todos/{id}")
-  public Todo updateTodo(@PathVariable Long id, @RequestBody Todo requestedTodo) {
-    //Todo retrievedTodo;
-    Todo retrievedTodo = toDoList.get(id);
-    if (retrievedTodo == null) {
-      throw new NoSuchElementException(String.format(TODO_WITH_THE_ID_X_NOT_FOUND, id));
+  public void updateTodo(@PathVariable Long id, @RequestBody Todo requestedTodo) {
+    for (Todo existingTodo : toDoList) {
+      if (existingTodo.getId().equals(id)) {
+        existingTodo.setSummary(requestedTodo.getSummary());
+        existingTodo.setDescription(requestedTodo.getDescription());
+        return;
+      }
     }
-
-    retrievedTodo.setDescription(requestedTodo.getDescription());
-    retrievedTodo.setSummary(requestedTodo.getSummary());
-    return requestedTodo;
+    throw new NoSuchElementException(String.format(TODO_WITH_THE_ID_X_NOT_FOUND, id));
   }
 
 
   @DeleteMapping("/todos/{id}")
   public void deleteTodo(@PathVariable Long id) {
-    //Todo retrievedTodo;
-    Todo retrievedTodo = toDoList.get(id);
-    if (retrievedTodo == null) {
-      throw new NoSuchElementException(String.format(TODO_WITH_THE_ID_X_NOT_FOUND, id));
+
+    for (Todo existingTodo : toDoList) {
+      if (existingTodo.getId().equals(id)) {
+        toDoList.remove(existingTodo);
+        return;
+      }
     }
-    toDoList.remove(id);
+    throw new NoSuchElementException(String.format(TODO_WITH_THE_ID_X_NOT_FOUND, id));
   }
 
 
-  @GetMapping
-  public HashMap<Long, Todo> getAll(){
+  @GetMapping("/todos")
+  public ArrayList<Todo> getAll(){
     return toDoList;
   }
 }
